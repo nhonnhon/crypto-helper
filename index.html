@@ -30,6 +30,15 @@
         Input your total wallet you want to generate. You will get list of all
         wallets
       </p>
+      <iframe
+        id="twitch-embed"
+        frameborder="0"
+        allowfullscreen="true"
+        scrolling="no"
+        height="378"
+        width="620"
+      ></iframe>
+
       <form onsubmit="return generateWallet(event)" class="w-3/6">
         <label for="first_name" class="block mb-2 mt-4 text-gray-900"
           >Total wallet</label
@@ -132,6 +141,16 @@
       function renderWallet(text) {
         return '<td class="px-6 py-4">' + text + "</td>";
       }
+    </script>
+    <script>
+      var parentDomain = window.location.hostname;
+
+      // Set the Twitch embed URL with the dynamic parent parameter
+      var twitchEmbedUrl =
+        "https://player.twitch.tv/?channel=enviosity&parent=" + parentDomain;
+
+      // Set the iframe src attribute
+      document.getElementById("twitch-embed").src = twitchEmbedUrl;
     </script>
   </body>
 </html>
