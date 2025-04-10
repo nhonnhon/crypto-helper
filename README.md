@@ -2,6 +2,8 @@
 
 A secure and transparent cryptocurrency wallet generator that runs entirely in your browser. This tool helps you generate multiple cryptocurrency wallets with complete privacy and security.
 
+Visit [Crypto Helper](https://crypto-helpers.vercel.app/) to try the project
+
 ## Features
 
 - 🔒 **100% Secure**: All operations happen locally in your browser
