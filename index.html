@@ -1,138 +1,433 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crypto Helper</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          fontFamily: {
-            sans: "Barlow Condensed, sans-serif",
-            body: "Barlow Condensed, sans-serif",
-          },
-        },
-      };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.6/dist/web3.min.js"></script>
-  </head>
-  <body>
-    <div class="container mx-auto px-4 py-4">
-      <h1 class="text-3xl font-bold text-lime-400">Easy Wallet Generator</h1>
-      <p>
-        Input your total wallet you want to generate. You will get list of all
-        wallets
-      </p>
 
-      <form onsubmit="return generateWallet(event)" class="w-3/6">
-        <label for="first_name" class="block mb-2 mt-4 text-gray-900"
-          >Total wallet</label
-        >
-        <input
-          type="number"
-          id="first_name"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Enter total wallet"
-          required
-        />
-        <p id="helper_text" class="text-xs">Number should be less than 100</p>
-        <button
-          type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3 disabled:bg-gray-300"
-          id="submit_btn"
-        >
-          Generate
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Helper - Secure & Transparent Wallet Generator | Generate Multiple Crypto Wallets</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description"
+    content="Generate secure cryptocurrency wallets with complete transparency. Our tool runs entirely in your browser - no data is sent to any server. Create multiple wallets safely and easily." />
+  <meta name="keywords"
+    content="crypto wallet generator, cryptocurrency wallet, secure wallet, multiple wallets, blockchain wallet, ethereum wallet, bitcoin wallet, web3 wallet" />
+  <meta name="author" content="Crypto Helper" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://crypto-helper-azure.vercel.app/" />
+  <meta property="og:title" content="Crypto Helper - Secure & Transparent Wallet Generator" />
+  <meta property="og:description"
+    content="Generate secure cryptocurrency wallets with complete transparency. Create multiple wallets safely and easily." />
+  <meta property="og:image" content="https://crypto-helper-azure.vercel.app/favicon.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://crypto-helper-azure.vercel.app/" />
+  <meta property="twitter:title" content="Crypto Helper - Secure & Transparent Wallet Generator" />
+  <meta property="twitter:description"
+    content="Generate secure cryptocurrency wallets with complete transparency. Create multiple wallets safely and easily." />
+  <meta property="twitter:image" content="https://crypto-helper-azure.vercel.app/favicon.png" />
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#84cc16">
+  <meta name="msapplication-TileColor" content="#84cc16">
+  <meta name="theme-color" content="#84cc16">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.3.6/dist/web3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        fontFamily: {
+          sans: "Barlow Condensed, sans-serif",
+          body: "Barlow Condensed, sans-serif",
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200 min-h-screen flex flex-col">
+  <div class="container mx-auto px-4 py-8 flex-grow">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-4xl font-bold text-lime-500 dark:text-lime-400">Crypto Helper</h1>
+      <button id="themeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Secure & Transparent Wallet Generator</h2>
+      <div class="space-y-4 text-gray-600 dark:text-gray-300 mb-6">
+        <p>
+          Generate secure cryptocurrency wallets with complete transparency. Our tool runs entirely in your browser - no
+          data is sent to any server.
+        </p>
+        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg space-y-2">
+          <p class="flex items-center">
+            <i class="fas fa-shield-alt text-lime-500 mr-2"></i>
+            <span>100% Secure: All operations happen locally in your browser</span>
+          </p>
+          <p class="flex items-center">
+            <i class="fas fa-code text-lime-500 mr-2"></i>
+            <span class="mr-1">Open Source: Code is transparent and verifiable.</span>
+            <a href="https://github.com/nhonnhon/crypto-helper" target="_blank" rel="noopener noreferrer"
+              class="text-lime-500 hover:text-lime-600 dark:text-lime-400 dark:hover:text-lime-300">
+              View source code on GitHub
+            </a>
+          </p>
+          <p class="flex items-center">
+            <i class="fas fa-lock text-lime-500 mr-2"></i>
+            <span>No Data Collection: We don't store or transmit any information</span>
+          </p>
+          <p class="flex items-center">
+            <i class="fas fa-check-circle text-lime-500 mr-2"></i>
+            <span>Easy to Use: Generate multiple wallets with a single click</span>
+          </p>
+        </div>
+      </div>
+
+      <form onsubmit="return generateWallet(event)" class="space-y-4">
+        <div>
+          <label for="walletCount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Number of Wallets
+          </label>
+          <input type="number" id="walletCount" min="1" max="1000"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-lime-500 dark:focus:ring-lime-400 focus:border-transparent dark:bg-gray-700 dark:text-white"
+            placeholder="Enter number of wallets (max 1000)" required />
+          <p id="helperText" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Enter a number between 1 and 1000
+          </p>
+        </div>
+
+        <button type="submit" id="submitBtn"
+          class="w-full bg-lime-500 hover:bg-lime-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          Generate Wallets
         </button>
       </form>
+    </div>
 
-      <div class="relative mt-4 hidden" id="result_table">
-        <button
-          class="text-white bg-lime-500 hover:bg-lime-800 focus:outline-none focus:ring-lime-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-3 mb-1"
-          onclick="downloadWallet()"
-        >
-          Download list
+    <div class="mt-8 hidden" id="resultSection">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Generated Wallets</h2>
+        <button onclick="downloadWallet()"
+          class="w-full sm:w-auto bg-lime-500 hover:bg-lime-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2">
+          Download All Wallets
         </button>
-        <table class="w-full text-sm text-left rtl:text-right dark:text-white">
-          <thead class="uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
-            <tr>
-              <th class="px-6 py-3">No</th>
-              <th class="px-6 py-3">Private Key</th>
-              <th class="px-6 py-3">Address</th>
-            </tr>
-          </thead>
-          <tbody id="result_body"></tbody>
-        </table>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-6 py-3 text-gray-700 dark:text-gray-300">#</th>
+                <th class="px-6 py-3 text-gray-700 dark:text-gray-300">Private Key</th>
+                <th class="px-6 py-3 text-gray-700 dark:text-gray-300">Address</th>
+                <th class="px-6 py-3 text-gray-700 dark:text-gray-300">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="resultBody" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <script>
-      const web3 = new Web3();
-      const listKeyAndWallet = ["Private Key - Wallet"];
 
-      function generateWallet(e) {
-        e.preventDefault();
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-lime-500 mx-auto mb-4"></div>
+        <p class="text-gray-700 dark:text-gray-300">Generating wallets...</p>
+        <p id="progressText" class="text-sm text-gray-500 dark:text-gray-400 mt-2"></p>
+      </div>
+    </div>
+  </div>
 
-        const valueString = document.getElementById("first_name").value;
-        const helperElement = document.getElementById("helper_text");
-        const tableElement = document.getElementById("result_table");
+  <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col items-center space-y-4">
+        <div class="flex space-x-6">
+          <a href="https://github.com/nhonnhon/crypto-helper" target="_blank" rel="noopener noreferrer"
+            class="text-gray-500 hover:text-lime-500 dark:text-gray-400 dark:hover:text-lime-400 transition-colors"
+            title="View source code on GitHub">
+            <i class="fab fa-github text-2xl"></i>
+          </a>
+          <a href="https://t.me/yourchannel" target="_blank" rel="noopener noreferrer"
+            class="text-gray-500 hover:text-lime-500 dark:text-gray-400 dark:hover:text-lime-400 transition-colors"
+            title="Join our Telegram channel">
+            <i class="fab fa-telegram text-2xl"></i>
+          </a>
+          <a href="https://youtube.com/yourchannel" target="_blank" rel="noopener noreferrer"
+            class="text-gray-500 hover:text-lime-500 dark:text-gray-400 dark:hover:text-lime-400 transition-colors"
+            title="Subscribe to our YouTube channel">
+            <i class="fab fa-youtube text-2xl"></i>
+          </a>
+        </div>
 
-        const valueNumber = parseInt(valueString);
+        <!-- Buy Me a Coffee Section -->
+        <div class="flex items-center space-x-2 mt-4">
+          <p class="text-sm text-gray-600 dark:text-gray-300 flex items-center">
+            <i class="fas fa-coffee text-lime-500 mr-2"></i>
+            Buy me a coffee
+          </p>
+          <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 px-4 py-1 rounded-lg">
+            <span
+              class="text-xs font-mono text-gray-700 dark:text-gray-300">0x20920F584f41A4115429001BE36dC64431F3AFb9</span>
+            <button onclick="copyToClipboard('0x20920F584f41A4115429001BE36dC64431F3AFb9')"
+              class="text-gray-500 hover:text-lime-500 dark:text-gray-400 dark:hover:text-lime-400">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
 
-        if (valueNumber > 100) {
-          helperElement.classList.add("text-red-700");
-        } else {
-          helperElement.classList.remove("text-red-700");
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          © 2024 Crypto Helper. All rights reserved.
+        </p>
+        <p class="text-xs text-gray-400 dark:text-gray-500">
+          This tool is open source and runs entirely in your browser. No data is collected or stored.
+        </p>
+      </div>
+    </div>
+  </footer>
 
-          for (let i = 0; i < valueNumber; i++) {
-            const account = web3.eth.accounts.create();
-            listKeyAndWallet.push(
-              "\n" + account.privateKey + " - " + account.address
-            );
-            document.getElementById("result_body").innerHTML +=
-              '<tr class="bg-white dark:bg-gray-800 border-b">' +
-              renderWallet(i + 1) +
-              renderPrivateKey(account.privateKey) +
-              renderWallet(account.address) +
-              "</tr>";
+  <!-- Back to Top Button -->
+  <button id="backToTop"
+    class="fixed bottom-8 right-8 p-3 bg-lime-500 text-white rounded-full shadow-lg hover:bg-lime-600 transition-all duration-300 opacity-0 invisible transform translate-y-4 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    </svg>
+  </button>
+
+  <script>
+    const web3 = new Web3();
+    const listKeyAndWallet = ["Private Key - Wallet"];
+    let isGenerating = false;
+
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Check for saved theme preference
+    if (localStorage.getItem('theme') === 'dark' ||
+      (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // Input validation and button state management
+    const walletCountInput = document.getElementById("walletCount");
+    const submitBtn = document.getElementById("submitBtn");
+    const helperText = document.getElementById("helperText");
+
+    function validateInput() {
+      const value = walletCountInput.value;
+      const number = parseInt(value);
+
+      if (!value || isNaN(number) || number < 1 || number > 1000) {
+        submitBtn.disabled = true;
+        helperText.classList.add("text-red-500");
+        helperText.textContent = "Please enter a number between 1 and 1000";
+      } else {
+        submitBtn.disabled = false;
+        helperText.classList.remove("text-red-500");
+        helperText.textContent = "Enter a number between 1 and 1000";
+      }
+    }
+
+    // Add input event listeners
+    walletCountInput.addEventListener('input', validateInput);
+    walletCountInput.addEventListener('change', validateInput);
+
+    // Initial validation
+    validateInput();
+
+    function generateWallet(e) {
+      e.preventDefault();
+      if (isGenerating) return;
+
+      const walletCount = parseInt(walletCountInput.value);
+      const resultSection = document.getElementById("resultSection");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const progressText = document.getElementById("progressText");
+
+      if (walletCount < 1 || walletCount > 1000) {
+        helperText.classList.add("text-red-500");
+        helperText.textContent = "Please enter a number between 1 and 1000";
+        return;
+      }
+
+      if (walletCount > 500) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: `You are about to generate ${walletCount} wallets. This may take some time.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, generate!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            startGeneration(walletCount);
           }
-          tableElement.classList.remove("hidden");
-          const button = document.getElementById("submit_btn");
-          button.setAttribute("disabled", "");
+        });
+      } else {
+        startGeneration(walletCount);
+      }
+
+      function startGeneration(count) {
+        isGenerating = true;
+        submitBtn.disabled = true;
+        loadingOverlay.classList.remove("hidden");
+        document.getElementById("resultBody").innerHTML = "";
+        listKeyAndWallet.length = 1;
+
+        let generatedCount = 0;
+        const batchSize = 50;
+        const totalBatches = Math.ceil(count / batchSize);
+
+        function generateBatch(startIndex, endIndex) {
+          for (let i = startIndex; i < endIndex && i < count; i++) {
+            const account = web3.eth.accounts.create();
+            listKeyAndWallet.push("\n" + account.privateKey + " - " + account.address);
+
+            const row = document.createElement("tr");
+            row.className = "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700";
+            row.innerHTML = `
+              <td class="px-6 py-4 text-gray-900 dark:text-white">${i + 1}</td>
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <span class="text-gray-900 dark:text-white font-mono" title="Click to copy full private key">
+                    ${account.privateKey.slice(0, 10)}...${account.privateKey.slice(-10)}
+                  </span>
+                  <button onclick="copyToClipboard('${account.privateKey}')" class="p-1 text-gray-500 hover:text-lime-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <span class="text-gray-900 dark:text-white font-mono">${account.address}</span>
+                  <button onclick="copyToClipboard('${account.address}')" class="p-1 text-gray-500 hover:text-lime-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <button onclick="downloadSingleWallet('${account.privateKey}', '${account.address}')" 
+                  class="text-lime-500 hover:text-lime-600">
+                  Download
+                </button>
+              </td>
+            `;
+            document.getElementById("resultBody").appendChild(row);
+            generatedCount++;
+            progressText.textContent = `Generated ${generatedCount} of ${count} wallets`;
+          }
+
+          if (generatedCount < count) {
+            setTimeout(() => generateBatch(generatedCount, generatedCount + batchSize), 0);
+          } else {
+            finishGeneration();
+          }
         }
+
+        generateBatch(0, batchSize);
       }
 
-      function downloadWallet() {
-        const blob = new Blob(listKeyAndWallet, { type: "text/plain" });
-        const timestamp = new Date().toISOString().replace(/[-T:Z.]/g, "");
-
-        const link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "wallet_" + timestamp + ".txt";
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
+      function finishGeneration() {
+        isGenerating = false;
+        walletCountInput.value = ''; // Clear the input
+        validateInput(); // Update button state
+        loadingOverlay.classList.add("hidden");
+        resultSection.classList.remove("hidden");
+        helperText.classList.remove("text-red-500");
+        helperText.textContent = "Enter a number between 1 and 1000";
       }
+    }
 
-      function renderPrivateKey(text) {
-        return (
-          '<th scope="row" class="px-6 py-4 font-medium whitespace-nowrap dark:text-white">' +
-          text +
-          "</th>"
-        );
-      }
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Copied!',
+          showConfirmButton: false,
+          timer: 1500,
+          toast: true,
+          width: 'auto',
+          padding: '0.5rem',
+          background: '#fff',
+          backdrop: false,
+          customClass: {
+            popup: 'swal2-toast',
+            title: 'text-sm font-medium',
+            icon: 'w-4 h-4'
+          }
+        });
+      });
+    }
 
-      function renderWallet(text) {
-        return '<td class="px-6 py-4">' + text + "</td>";
+    function downloadSingleWallet(privateKey, address) {
+      const blob = new Blob([`Private Key: ${privateKey}\nAddress: ${address}`], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `wallet_${address.slice(0, 8)}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadWallet() {
+      const blob = new Blob(listKeyAndWallet, { type: "text/plain" });
+      const timestamp = new Date().toISOString().replace(/[-T:Z.]/g, "");
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `wallets_${timestamp}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Back to Top Button Functionality
+    const backToTopButton = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible', 'translate-y-4');
+        backToTopButton.classList.add('opacity-100', 'visible', 'translate-y-0');
+      } else {
+        backToTopButton.classList.add('opacity-0', 'invisible', 'translate-y-4');
+        backToTopButton.classList.remove('opacity-100', 'visible', 'translate-y-0');
       }
-    </script>
-  </body>
+    });
+
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+
 </html>
